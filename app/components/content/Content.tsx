@@ -12,12 +12,10 @@ import image5 from "@/public/Savetik-Net_7624210792434519317_5_v2.jpeg";
 
 export default function Content() {
   const videoRef = useRef<HTMLVideoElement>(null);
-
   const images = [image2, image3, image4, image5];
 
   return (
     <>
-      {/* Hero Section with Video */}
       <section className="relative w-full min-h-[70vh] md:min-h-screen overflow-hidden">
         <video
           ref={videoRef}
@@ -104,6 +102,9 @@ export default function Content() {
               />
             </motion.div>
           ))}
+        </div>
+        <div>
+
         </div>
       </section>
     </>

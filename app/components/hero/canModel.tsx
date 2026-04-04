@@ -19,12 +19,12 @@ export default function CanModel() {
   useEffect(() => {
     if (!canRef.current) return;
 
-    canRef.current.position.set(0, -5, 0);
+    canRef.current.position.set(0, -3, 0);
     canRef.current.rotation.y = -Math.PI;
 
     gsap.to(canRef.current.position, {
       y: REST_Y,
-      duration: 1.8,
+      duration: 0.8,
       ease: "power3.out",
       onComplete: () => {
         introComplete.current = true;

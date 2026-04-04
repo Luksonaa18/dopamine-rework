@@ -3,7 +3,9 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import gsap from "gsap";
+import Image from "next/image";
 import CanModel from "./canModel";
+import photo from "@/public/UN.png";
 
 export default function Hero() {
   const textRef = useRef<HTMLDivElement>(null);
@@ -12,7 +14,7 @@ export default function Hero() {
   const canvasWrapRef = useRef<HTMLDivElement>(null);
 
   const [isMobile, setIsMobile] = useState(false);
-  const [isVisible, setIsVisible] = useState(false); // false = don't render until in view
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -21,7 +23,6 @@ export default function Hero() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Pause canvas when scrolled off screen
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
@@ -33,7 +34,6 @@ export default function Hero() {
 
   useEffect(() => {
     if (!textRef.current || !badgeRef.current || !btnRef.current) return;
-
     const ctx = gsap.context(() => {
       gsap.fromTo(
         textRef.current,
@@ -51,7 +51,6 @@ export default function Hero() {
         { opacity: 1, y: 0, duration: 0.8, delay: 0.6, force3D: true },
       );
     });
-
     return () => ctx.revert();
   }, []);
 
@@ -124,7 +123,15 @@ export default function Hero() {
             className="text-lg max-w-md"
             style={{ color: "rgba(255,255,255,0.6)" }}
           >
-            გამოცადე ახალი ენერგიის დონე ჩვენი უახლესი ფორმულით...
+            გამოცადე ახალი ენერგიის დონე ჩვენი უახლესი ფორმულით,{" "}
+            <span
+              style={{
+                textShadow: "0 0 20px #F5E642, 0 0 40px rgba(245,230,66,0.5)",
+              }}
+              className="text-[#F5E642]"
+            >
+              რაც მთავარია ცივი დამლიე
+            </span>
           </p>
 
           <div
@@ -171,34 +178,35 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT - 3D CAN */}
         <div
           ref={canvasWrapRef}
           className="flex-1 w-full h-75 sm:h-100 md:h-150 flex items-center justify-center relative z-0"
         >
-          <Canvas
-            frameloop={isVisible ? "always" : "demand"}
-            dpr={[1, 1.5]}
-            performance={{ min: 0.5 }}
-            gl={{ antialias: false, powerPreference: "high-performance" }}
-            camera={{
-              position: isMobile ? [0, 0.5, 6] : [0, 1.5, 8],
-              fov: 45,
-            }}
-          >
-            <ambientLight intensity={0.8} />
-            <directionalLight position={[3, 3, 3]} intensity={1} />
-
-            <Suspense fallback={null}>
-              <group
-                position={[0, isMobile ? -1.5 : -1, 0]}
-                scale={isMobile ? 0.99 : 1}
-              >
-                <CanModel />
-              </group>
-              <Environment preset="studio" />
-            </Suspense>
-          </Canvas>
+          {isMobile ? (
+            <Image
+              src={photo}
+              alt="Dopamine Can"
+              className="w-full h-full object-contain"
+              placeholder="blur"
+            />
+          ) : (
+            <Canvas
+              frameloop={isVisible ? "always" : "demand"}
+              dpr={[1, 1.5]}
+              performance={{ min: 0.5 }}
+              gl={{ antialias: false, powerPreference: "high-performance" }}
+              camera={{ position: [0, 1.5, 8], fov: 45 }}
+            >
+              <ambientLight intensity={0.8} />
+              <directionalLight position={[3, 3, 3]} intensity={1} />
+              <Suspense fallback={null}>
+                <group position={[0, -1, 0]}>
+                  <CanModel />
+                </group>
+                <Environment preset="studio" />
+              </Suspense>
+            </Canvas>
+          )}
         </div>
       </div>
     </section>

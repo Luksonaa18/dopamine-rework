@@ -1,22 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { IoMenu, IoClose } from "react-icons/io5";
-import { AnimatePresence, motion } from "framer-motion";
+
+import { navItems } from "@/app/page";
+import Menu from "../menubar/Menu";
 
 const Header = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const navItems = [
-    { name: "მთავარი", href: "/" },
-    { name: "პროდუქტები", href: "/products" },
-    {
-      name: "ჩვენ შესახებ",
-      href: "https://www.tiktok.com/@dopamine.energy/video/7624523299577449749",
-    },
-    {
-      name: "კონტაქტი",
-      href: "https://www.instagram.com/dopamine.energy?igsh=MWY5aXhnZXphaHFkMg==",
-    },
-  ];
+  const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -25,7 +15,6 @@ const Header = () => {
       document.body.style.overflow = "auto";
     };
   }, [isOpen]);
-
   return (
     <>
       <header className="w-full sticky top-0 z-50 backdrop-blur-md bg-[#0D0010]/85 border-b border-[#6B2FD9]/30 shadow-lg">
@@ -57,88 +46,21 @@ const Header = () => {
             პროდუქტის შესახებ
           </a>
 
-          {/* Mobile toggle */}
-          <button
-            onClick={() => setIsOpen((prev) => !prev)}
-            className="md:hidden text-[#F5E642] cursor-pointer hover:opacity-75 transition-opacity"
-            aria-label="Toggle menu"
-          >
-            <AnimatePresence mode="wait">
-              {isOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <IoClose className="text-3xl" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <IoMenu className="text-3xl" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </button>
+          <Menu isOpen={isOpen} setIsOpen={setIsOpen} />
+
+          {isOpen ? (
+            <IoClose
+              onClick={() => setIsOpen(false)}
+              className="text-3xl text-[#F5E642] md:hidden cursor-pointer"
+            />
+          ) : (
+            <IoMenu
+              onClick={() => setIsOpen(true)}
+              className="text-3xl text-[#F5E642] md:hidden cursor-pointer"
+            />
+          )}
         </nav>
       </header>
-
-      {/* Mobile full-screen menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: "-100%" }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: "-100%" }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 bg-[#0D0010]/95 backdrop-blur-md flex flex-col items-center justify-center"
-          >
-            {/* Close button */}
-            <button
-              onClick={() => setIsOpen(false)}
-              className="absolute top-6 right-6 text-[#F5E642] text-4xl p-2 hover:opacity-80 transition-opacity"
-              aria-label="Close menu"
-            >
-              <IoClose />
-            </button>
-
-            {/* Menu links */}
-            <nav className="flex flex-col items-center gap-6">
-              {navItems.map((item, index) => (
-                <motion.a
-                  key={item.name}
-                  href={item.href}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.07 }}
-                  className="text-2xl text-white hover:text-[#F5E642] transition-colors duration-200"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </motion.a>
-              ))}
-
-              <motion.a
-                href="/products"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navItems.length * 0.07 + 0.1 }}
-                className="mt-8 px-8 py-3 bg-[#F5E642] text-[#0D0010] font-bold rounded-full hover:shadow-[0_0_16px_#F5E64280] transition-all duration-300"
-                onClick={() => setIsOpen(false)}
-              >
-                Buy Now
-              </motion.a>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 };
