@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMenu, IoClose } from "react-icons/io5";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -17,6 +17,14 @@ const Header = () => {
       href: "https://www.instagram.com/dopamine.energy?igsh=MWY5aXhnZXphaHFkMg==",
     },
   ];
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
 
   return (
     <>
@@ -26,6 +34,7 @@ const Header = () => {
             DOPAMINE
           </h1>
 
+          {/* Desktop menu */}
           <ul className="hidden md:flex flex-row items-center gap-8">
             {navItems.map((item) => (
               <li key={item.name}>
@@ -40,13 +49,15 @@ const Header = () => {
             ))}
           </ul>
 
+          {/* Desktop CTA */}
           <a
-            href="https://www.instagram.com/dopamine.energy?igsh=MWY5aXhnZXphaHFkMg=="
+            href="/products"
             className="hidden md:block px-5 py-2 bg-[#F5E642] text-[#0D0010] text-sm font-bold rounded-full hover:shadow-[0_0_16px_#F5E64280] transition-all duration-300"
           >
             პროდუქტის შესახებ
           </a>
 
+          {/* Mobile toggle */}
           <button
             onClick={() => setIsOpen((prev) => !prev)}
             className="md:hidden text-[#F5E642] cursor-pointer hover:opacity-75 transition-opacity"
@@ -79,25 +90,35 @@ const Header = () => {
         </nav>
       </header>
 
+      {/* Mobile full-screen menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden sticky
-             top-16.25 z-40 w-full bg-[#0D0010]/95 backdrop-blur-md border-b border-[#6B2FD9]/30 shadow-lg overflow-hidden"
+            initial={{ opacity: 0, y: "-100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "-100%" }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            className="fixed inset-0 z-50 bg-[#0D0010]/95 backdrop-blur-md flex flex-col items-center justify-center"
           >
-            <nav className="flex flex-col items-center py-6 gap-1">
+            {/* Close button */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-6 right-6 text-[#F5E642] text-4xl p-2 hover:opacity-80 transition-opacity"
+              aria-label="Close menu"
+            >
+              <IoClose />
+            </button>
+
+            {/* Menu links */}
+            <nav className="flex flex-col items-center gap-6">
               {navItems.map((item, index) => (
                 <motion.a
                   key={item.name}
                   href={item.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.07 }}
-                  className="text-lg text-white w-full text-center py-3 hover:text-[#F5E642] hover:bg-[#6B2FD9]/10 transition-all duration-200"
+                  className="text-2xl text-white hover:text-[#F5E642] transition-colors duration-200"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
@@ -106,10 +127,10 @@ const Header = () => {
 
               <motion.a
                 href="/products"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navItems.length * 0.07 }}
-                className="mt-4 px-8 py-3 bg-[#F5E642] text-[#0D0010] font-bold rounded-full hover:shadow-[0_0_16px_#F5E64280] transition-all duration-300"
+                transition={{ delay: navItems.length * 0.07 + 0.1 }}
+                className="mt-8 px-8 py-3 bg-[#F5E642] text-[#0D0010] font-bold rounded-full hover:shadow-[0_0_16px_#F5E64280] transition-all duration-300"
                 onClick={() => setIsOpen(false)}
               >
                 Buy Now

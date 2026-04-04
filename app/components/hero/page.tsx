@@ -182,7 +182,7 @@ export default function Hero() {
             performance={{ min: 0.5 }}
             gl={{ antialias: false, powerPreference: "high-performance" }}
             camera={{
-              position: isMobile ? [0, 0.5, 6] : [0, 1.5, 8], // closer for mobile
+              position: isMobile ? [0, 0.5, 6] : [0, 1.5, 8],
               fov: 45,
             }}
           >
@@ -191,8 +191,8 @@ export default function Hero() {
 
             <Suspense fallback={null}>
               <group
-                position={[0, isMobile ? -0.5 : -1, 0]}
-                scale={isMobile ? 1.2 : 1}
+                position={[0, isMobile ? -1.5 : -1, 0]}
+                scale={isMobile ? 0.99 : 1}
               >
                 <CanModel />
               </group>
