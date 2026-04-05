@@ -3,15 +3,20 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import CanModel from "./canModel";
 import photo from "@/public/UN.png";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const textRef = useRef<HTMLDivElement>(null);
   const badgeRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLDivElement>(null);
   const canvasWrapRef = useRef<HTMLDivElement>(null);
+  const canImageRef = useRef<HTMLDivElement>(null);
+  const mobileExtrasRef = useRef<HTMLDivElement>(null);
 
   const [isMobile, setIsMobile] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -53,10 +58,88 @@ export default function Hero() {
     });
     return () => ctx.revert();
   }, []);
+  useEffect(() => {
+    if (!isMobile || !canImageRef.current || !mobileExtrasRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.set(canImageRef.current, { x: -300, opacity: 0, rotation: -25 });
+
+      gsap.to(canImageRef.current, {
+        x: 0,
+        opacity: 1,
+        rotation: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: canvasWrapRef.current,
+          start: "top 70%",
+          once: true,
+        },
+        onComplete: () => {
+          gsap.to(canImageRef.current, {
+            y: "+=18",
+            duration: 2.2,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+          });
+
+          gsap.to(canImageRef.current, {
+            rotation: -8,
+            duration: 2.8,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+          })
+         
+        },
+      });
+
+      gsap.to(".can-glow", {
+        opacity: 0.7,
+        scale: 1,
+        duration: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: canvasWrapRef.current,
+          start: "top 80%",
+          once: true,
+        },
+        onComplete: () => {
+          gsap.to(".can-glow", {
+            opacity: 0.4,
+            scale: 1.3,
+            duration: 2.2,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+          });
+        },
+      });
+
+      gsap.fromTo(
+        ".mobile-feature-card",
+        { opacity: 0, x: -30 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.5,
+          ease: "power2.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: mobileExtrasRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        },
+      );
+    });
+
+    return () => ctx.revert();
+  }, [isMobile]);
 
   return (
-    <section className="relative w-full min-h-screen bg-[#0D0010] overflow-hidden flex items-center p-2">
-      {/* BACKGROUND GLOW - no blur on mobile */}
+    <section className="relative w-full bg-[#0D0010] overflow-hidden flex flex-col items-center p-2">
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div
           className="absolute w-125 h-125 md:blur-[120px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -68,7 +151,6 @@ export default function Hero() {
         />
       </div>
 
-      {/* GRID */}
       <div
         className="absolute inset-0 opacity-5 z-0"
         style={{
@@ -78,9 +160,7 @@ export default function Hero() {
         }}
       />
 
-      {/* CONTENT */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-        {/* LEFT */}
+      <div className="relative z-20 w-full min-h-screen max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
         <div
           ref={textRef}
           className="flex-1 flex flex-col gap-6 opacity-0 will-change-transform"
@@ -108,7 +188,7 @@ export default function Hero() {
           <h1 className="text-5xl md:text-7xl font-black text-white leading-tight will-change-transform">
             შეიგრძენი{" "}
             <span
-              className="mt-2 px-4 font-bold"
+              className="font-bold"
               style={{
                 color: "#F5E642",
                 textShadow:
@@ -157,6 +237,7 @@ export default function Hero() {
             {[
               { value: "250ml", label: "ენერგია" },
               { value: "100%", label: "ფოკუსი" },
+              { value: "80mg", label: "caffeine" },
             ].map((stat) => (
               <div key={stat.label}>
                 <div
@@ -177,18 +258,35 @@ export default function Hero() {
             ))}
           </div>
         </div>
-
         <div
           ref={canvasWrapRef}
-          className="flex-1 w-full h-75 sm:h-100 md:h-150 flex items-center justify-center relative z-0"
+          className="flex-1 w-full h-75 sm:h-100 md:h-150 flex items-center justify-center relative z-0 overflow-hidden"
         >
           {isMobile ? (
-            <Image
-              src={photo}
-              alt="Dopamine Can"
-              className="w-full h-full object-contain"
-              placeholder="blur"
-            />
+            <div className="relative flex items-center justify-center w-full h-full">
+              <div
+                className="can-glow absolute w-56 h-56 rounded-full"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(107,47,217,0.7) 0%, transparent 70%)",
+                  filter: "blur(24px)",
+                  opacity: 0,
+                }}
+              />
+              <div
+                ref={canImageRef}
+                className="relative will-change-transform"
+                style={{ width: "380px", height: "320px", opacity: 0 }}
+              >
+                <Image
+                  src={photo}
+                  alt="Dopamine Can"
+                  fill
+                  style={{ objectFit: "contain" }}
+                  priority
+                />
+              </div>
+            </div>
           ) : (
             <Canvas
               frameloop={isVisible ? "always" : "demand"}
@@ -209,6 +307,55 @@ export default function Hero() {
           )}
         </div>
       </div>
+
+      {/* MOBILE ONLY extra content for scroll room */}
+      {isMobile && (
+        <div
+          ref={mobileExtrasRef}
+          className="relative z-20 w-full max-w-7xl mx-auto px-4 pb-20 flex flex-col gap-3 md:hidden"
+        >
+          <p
+            className="text-xs tracking-widest uppercase text-center mb-4"
+            style={{ color: "rgba(255,255,255,0.25)" }}
+          >
+            რატომ DOPAMINE
+          </p>
+
+          {[
+            {
+              icon: "⚡",
+              title: "სწრაფი ეფექტი",
+              desc: "პირველი სასმელიდანვე იგრძნობ განსხვავებას",
+            },
+            {
+              icon: "🧠",
+              title: "ფოკუსი",
+              desc: "80mg კოფეინი + B ვიტამინები ტვინის მუშაობისთვის",
+            },
+            { icon: "❄️", title: "ცივად დალიე", desc: "საუკეთესო გემო 4°C-ზე" },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="mobile-feature-card flex items-center gap-4 p-4 rounded-2xl opacity-0"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(107,47,217,0.15)",
+              }}
+            >
+              <span className="text-xl shrink-0">{item.icon}</span>
+              <div>
+                <p className="font-bold text-white text-sm">{item.title}</p>
+                <p
+                  className="text-xs mt-0.5"
+                  style={{ color: "rgba(255,255,255,0.45)" }}
+                >
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
