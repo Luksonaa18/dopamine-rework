@@ -16,9 +16,10 @@ export default function Hero() {
   const btnRef = useRef<HTMLDivElement>(null);
   const canvasWrapRef = useRef<HTMLDivElement>(null);
   const canImageRef = useRef<HTMLDivElement>(null);
+  const canGlowRef = useRef<HTMLDivElement>(null);
   const mobileExtrasRef = useRef<HTMLDivElement>(null);
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -26,6 +27,11 @@ export default function Hero() {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const id = setTimeout(() => ScrollTrigger.refresh(), 100);
+    return () => clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -58,8 +64,13 @@ export default function Hero() {
     });
     return () => ctx.revert();
   }, []);
+
   useEffect(() => {
     if (!isMobile || !canImageRef.current || !mobileExtrasRef.current) return;
+
+    const floatTween = { current: null as gsap.core.Tween | null };
+    const rotateTween = { current: null as gsap.core.Tween | null };
+    const glowPulseTween = { current: null as gsap.core.Tween | null };
 
     const ctx = gsap.context(() => {
       gsap.set(canImageRef.current, { x: -300, opacity: 0, rotation: -25 });
@@ -70,49 +81,53 @@ export default function Hero() {
         rotation: 0,
         duration: 1.2,
         ease: "power3.out",
+        force3D: true,
         scrollTrigger: {
           trigger: canvasWrapRef.current,
           start: "top 70%",
           once: true,
         },
         onComplete: () => {
-          gsap.to(canImageRef.current, {
+          floatTween.current = gsap.to(canImageRef.current, {
             y: "+=18",
             duration: 2.2,
             ease: "sine.inOut",
             yoyo: true,
             repeat: -1,
+            force3D: true,
           });
 
-          gsap.to(canImageRef.current, {
+          rotateTween.current = gsap.to(canImageRef.current, {
             rotation: -8,
             duration: 2.8,
             ease: "sine.inOut",
             yoyo: true,
             repeat: -1,
-          })
-         
+            force3D: true,
+          });
         },
       });
 
-      gsap.to(".can-glow", {
+      gsap.to(canGlowRef.current, {
         opacity: 0.7,
         scale: 1,
         duration: 1,
         ease: "power2.out",
+        force3D: true,
         scrollTrigger: {
           trigger: canvasWrapRef.current,
           start: "top 80%",
           once: true,
         },
         onComplete: () => {
-          gsap.to(".can-glow", {
+          glowPulseTween.current = gsap.to(canGlowRef.current, {
             opacity: 0.4,
             scale: 1.3,
             duration: 2.2,
             ease: "sine.inOut",
             yoyo: true,
             repeat: -1,
+            force3D: true,
           });
         },
       });
@@ -126,6 +141,7 @@ export default function Hero() {
           duration: 0.5,
           ease: "power2.out",
           stagger: 0.12,
+          force3D: true,
           scrollTrigger: {
             trigger: mobileExtrasRef.current,
             start: "top 85%",
@@ -135,7 +151,12 @@ export default function Hero() {
       );
     });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      floatTween.current?.kill();
+      rotateTween.current?.kill();
+      glowPulseTween.current?.kill();
+    };
   }, [isMobile]);
 
   return (
@@ -258,25 +279,37 @@ export default function Hero() {
             ))}
           </div>
         </div>
+
         <div
           ref={canvasWrapRef}
           className="flex-1 w-full h-75 sm:h-100 md:h-150 flex items-center justify-center relative z-0 overflow-hidden"
         >
-          {isMobile ? (
+          {/* FIX #5: Render nothing until isMobile is known — prevents hydration flash */}
+          {isMobile === null ? null : isMobile ? (
             <div className="relative flex items-center justify-center w-full h-full">
+              {/* FIX #3: canGlowRef instead of className selector */}
               <div
-                className="can-glow absolute w-56 h-56 rounded-full"
+                ref={canGlowRef}
+                className="absolute w-56 h-56 rounded-full"
                 style={{
                   background:
                     "radial-gradient(circle, rgba(107,47,217,0.7) 0%, transparent 70%)",
                   filter: "blur(24px)",
                   opacity: 0,
+                  // FIX #2: pre-promote glow to compositor layer
+                  willChange: "transform, opacity",
                 }}
               />
+              {/* FIX #2: will-change on the animated can image */}
               <div
                 ref={canImageRef}
-                className="relative will-change-transform"
-                style={{ width: "380px", height: "320px", opacity: 0 }}
+                className="relative"
+                style={{
+                  width: "380px",
+                  height: "320px",
+                  opacity: 0,
+                  willChange: "transform, opacity",
+                }}
               >
                 <Image
                   src={photo}
@@ -340,6 +373,8 @@ export default function Hero() {
               style={{
                 backgroundColor: "rgba(255,255,255,0.03)",
                 border: "1px solid rgba(107,47,217,0.15)",
+                // FIX #2: pre-promote cards to compositor layer
+                willChange: "transform, opacity",
               }}
             >
               <span className="text-xl shrink-0">{item.icon}</span>
