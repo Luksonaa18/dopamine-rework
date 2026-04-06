@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import CanModel from "./canModel";
 import photo from "@/public/UN.png";
+import { motion } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -224,7 +225,7 @@ export default function Hero() {
             className="text-lg max-w-md"
             style={{ color: "rgba(255,255,255,0.6)" }}
           >
-            გამოცადე ახალი ენერგიის დონე ჩვენი უახლესი ფორმულით,{" "}
+            გამოცადე ახალი ენერგიის დონე ჩვენი უახლესი ფორმულით, DOPAMINE Energy,{" "}
             <span
               style={{
                 textShadow: "0 0 20px #F5E642, 0 0 40px rgba(245,230,66,0.5)",
@@ -245,13 +246,18 @@ export default function Hero() {
             >
               შეიძინე ახლავე
             </button>
-            <a
-              href="/about"
-              className="px-6 py-3 rounded-full transition-all duration-200 border"
-              style={{ borderColor: "#6B2FD9", color: "white" }}
+            <motion.button
+              whileHover={{
+                scale: 1.05,
+                backgroundColor: "#F5E642",
+                color: "black",
+              }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 font-bold shadow-white rounded-full transition-all duration-200"
+              style={{ backgroundColor: "#6B2FD9", color: "white" }}
             >
               მეტი ინფორმაცია
-            </a>
+            </motion.button>
           </div>
 
           <div className="flex gap-8 pt-4">
@@ -284,10 +290,8 @@ export default function Hero() {
           ref={canvasWrapRef}
           className="flex-1 w-full h-75 sm:h-100 md:h-150 flex items-center justify-center relative z-0 overflow-hidden"
         >
-          {/* FIX #5: Render nothing until isMobile is known — prevents hydration flash */}
           {isMobile === null ? null : isMobile ? (
             <div className="relative flex items-center justify-center w-full h-full">
-              {/* FIX #3: canGlowRef instead of className selector */}
               <div
                 ref={canGlowRef}
                 className="absolute w-56 h-56 rounded-full"
@@ -296,11 +300,11 @@ export default function Hero() {
                     "radial-gradient(circle, rgba(107,47,217,0.7) 0%, transparent 70%)",
                   filter: "blur(24px)",
                   opacity: 0,
-                  // FIX #2: pre-promote glow to compositor layer
+
                   willChange: "transform, opacity",
                 }}
               />
-              {/* FIX #2: will-change on the animated can image */}
+
               <div
                 ref={canImageRef}
                 className="relative"
@@ -341,7 +345,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* MOBILE ONLY extra content for scroll room */}
       {isMobile && (
         <div
           ref={mobileExtrasRef}
@@ -373,7 +376,7 @@ export default function Hero() {
               style={{
                 backgroundColor: "rgba(255,255,255,0.03)",
                 border: "1px solid rgba(107,47,217,0.15)",
-                // FIX #2: pre-promote cards to compositor layer
+
                 willChange: "transform, opacity",
               }}
             >

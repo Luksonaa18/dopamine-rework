@@ -64,7 +64,7 @@ export default function Content() {
             md:grid-cols-3 
             auto-rows-[200px] md:auto-rows-[250px]"
         >
-          {/* Main Large Image */}
+          
           <motion.div
             className="sm:col-span-2 md:col-span-2 md:row-span-2 relative rounded-2xl overflow-hidden group"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -82,7 +82,7 @@ export default function Content() {
             />
           </motion.div>
 
-          {/* Small Images */}
+          
           {images.map((img, i) => (
             <motion.div
               key={i}
@@ -103,7 +103,7 @@ export default function Content() {
             </motion.div>
           ))}
         </div>
-        <div>
+        <div >
 
         </div>
       </section>

@@ -2,7 +2,6 @@ import { navItems } from "@/app/page";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoClose, IoMenu } from "react-icons/io5";
 
-
 interface MenuProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,7 +17,7 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
-            className="fixed h-screen inset-0 z-50 bg-[#0D0010]/95 backdrop-blur-md flex flex-col items-center justify-center"
+            className="fixed h-screen inset-0 z-50 bg-[#0D0010] backdrop-blur-md flex flex-col items-center justify-center"
           >
             <button
               onClick={() => setIsOpen(false)}
@@ -35,7 +34,7 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.07 }}
-                  className="text-2xl text-white hover:text-[#F5E642] transition-colors duration-200"
+                  className="text-2xl font-bold text-white hover:text-[#F5E642] transition-colors duration-200"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
