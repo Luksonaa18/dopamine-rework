@@ -248,10 +248,10 @@ export default function Hero() {
                 color: "black",
               }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 font-bold shadow-white rounded-full transition-all duration-200"
+              className="px-6 py-3 text-center shadow-white rounded-full transition-all duration-200"
               style={{ backgroundColor: "#6B2FD9", color: "white" }}
             >
-              <a href="/products">მეტი ინფორმაცია</a>
+              <a className="text-center py-2" href="/products">მეტი ინფორმაცია</a>
             </motion.button>
           </div>
 

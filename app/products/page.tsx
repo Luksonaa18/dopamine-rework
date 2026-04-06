@@ -48,9 +48,9 @@ const Product = () => {
       )
       .fromTo(
         buttonRef.current,
-        { opacity: 0, y: 20, scale: 0.95 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.35 },
-        "-=0.25",
+        { opacity: 0, x: -20 },
+        { opacity: 1, x: 0, duration: 0.35 ,ease:"power3.inOut"},
+       
       )
       .fromTo(
         imageCardRef.current,

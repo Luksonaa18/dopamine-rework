@@ -3,6 +3,23 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import localFont from "next/font/local";
+
+const myFont = localFont({
+  src: [
+    {
+      path: "../public/fonts/bpg_nino_mtavruli_bold.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/bpg_nino_mtavruli_bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-myfont",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${myFont.className}`}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
