@@ -40,17 +40,6 @@ const Menu: React.FC<MenuProps> = ({ isOpen, setIsOpen }) => {
                   {item.name}
                 </motion.a>
               ))}
-
-              <motion.a
-                href="/products"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navItems.length * 0.07 + 0.1 }}
-                className="mt-8 px-8 py-3 bg-[#F5E642] text-[#0D0010] font-bold rounded-full hover:shadow-[0_0_16px_#F5E64280] transition-all duration-300"
-                onClick={() => setIsOpen(false)}
-              >
-                Buy Now
-              </motion.a>
             </nav>
           </motion.div>
         )}

@@ -225,7 +225,8 @@ export default function Hero() {
             className="text-lg max-w-md"
             style={{ color: "rgba(255,255,255,0.6)" }}
           >
-            გამოცადე ახალი ენერგიის დონე ჩვენი უახლესი ფორმულით, DOPAMINE Energy,{" "}
+            გამოცადე ახალი ენერგიის დონე ჩვენი უახლესი ფორმულით, DOPAMINE
+            Energy,{" "}
             <span
               style={{
                 textShadow: "0 0 20px #F5E642, 0 0 40px rgba(245,230,66,0.5)",
@@ -240,12 +241,6 @@ export default function Hero() {
             ref={btnRef}
             className="opacity-0 flex gap-4 flex-wrap will-change-transform"
           >
-            <button
-              className="px-6 py-3 font-bold rounded-full transition-all duration-200 hover:scale-105"
-              style={{ backgroundColor: "#F5E642", color: "#000000" }}
-            >
-              შეიძინე ახლავე
-            </button>
             <motion.button
               whileHover={{
                 scale: 1.05,
@@ -256,7 +251,7 @@ export default function Hero() {
               className="px-6 py-3 font-bold shadow-white rounded-full transition-all duration-200"
               style={{ backgroundColor: "#6B2FD9", color: "white" }}
             >
-              მეტი ინფორმაცია
+              <a href="/products">მეტი ინფორმაცია</a>
             </motion.button>
           </div>
 
