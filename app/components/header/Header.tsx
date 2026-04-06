@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import {   useEffect, useState } from "react";
 import { IoMenu, IoClose } from "react-icons/io5";
 
 import { navItems } from "@/app/page";
